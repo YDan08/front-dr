@@ -47,8 +47,8 @@ export type Query = {
 export type WallDto = {
   height: Scalars['Float']['input'];
   length: Scalars['Float']['input'];
-  quantityDoors: Scalars['Float']['input'];
-  quantityWindows: Scalars['Float']['input'];
+  quantityDoors?: InputMaybe<Scalars['Float']['input']>;
+  quantityWindows?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type CalculateRoomPaintMutationVariables = Exact<{
