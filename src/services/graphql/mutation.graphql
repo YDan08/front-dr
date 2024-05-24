@@ -1,0 +1,8 @@
+mutation CalculateRoomPaint($data: CalculateRoomPaintDto!) {
+	CalculateRoomPaint(data: $data) {
+		ink05
+		ink3
+		ink2
+		ink18
+	}
+}
