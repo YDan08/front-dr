@@ -69,7 +69,7 @@ export const Home = () => {
 				},
 			},
 		});
-		const inksRoom = data?.CalculateRoomPaint;
+		const inksRoom = data?.calculateRoomPaint;
 		console.log(inksRoom);
 		if (inksRoom) {
 			navigate(routes.result, { state: { inksRoom } });

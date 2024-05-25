@@ -160,7 +160,7 @@
         "description": null,
         "fields": [
           {
-            "name": "CalculateRoomPaint",
+            "name": "calculateRoomPaint",
             "description": null,
             "args": [
               {

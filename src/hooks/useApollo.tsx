@@ -32,7 +32,7 @@ export type InkModel = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  CalculateRoomPaint: InkModel;
+  calculateRoomPaint: InkModel;
 };
 
 
@@ -57,12 +57,12 @@ export type CalculateRoomPaintMutationVariables = Exact<{
 }>;
 
 
-export type CalculateRoomPaintMutation = { __typename?: 'Mutation', CalculateRoomPaint: { __typename?: 'InkModel', ink05: number, ink3: number, ink2: number, ink18: number, totalInk: number } };
+export type CalculateRoomPaintMutation = { __typename?: 'Mutation', calculateRoomPaint: { __typename?: 'InkModel', ink05: number, ink3: number, ink2: number, ink18: number, totalInk: number } };
 
 
 export const CalculateRoomPaintDocument = gql`
-    mutation CalculateRoomPaint($data: CalculateRoomPaintDto!) {
-  CalculateRoomPaint(data: $data) {
+    mutation calculateRoomPaint($data: CalculateRoomPaintDto!) {
+  calculateRoomPaint(data: $data) {
     ink05
     ink3
     ink2
