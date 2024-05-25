@@ -1,30 +1,18 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, Location, Navigate, Link } from "react-router-dom";
 import { Container } from "../../components/container";
 
 import { routes } from "../../utils";
 import { Button } from "../../components/button";
+import { InkModel } from "../../hooks/useApollo";
 import { DivInk, TotalInk } from "./ResultPage.styled";
 
-interface inks {
-	ink05: number;
-	ink3: number;
-	ink2: number;
-	ink18: number;
-	totalInk: number;
-}
-
-interface stateProps {
-	state: {
-		inksRoom: inks;
-	};
-}
-
 export const ResultPage = () => {
-	const { state } = useLocation() as stateProps;
-	const navigate = useNavigate();
-	if (!state.inksRoom) {
-		navigate(routes.home);
+	const { state } = useLocation() as Location<{ inksRoom: InkModel }>;
+
+	if (!state?.inksRoom) {
+		return <Navigate to={routes.home} />;
 	}
+
 	return (
 		<Container>
 			<h1>Resultado</h1>
@@ -35,9 +23,9 @@ export const ResultPage = () => {
 				<p>Total de tinta 2,5L: {state.inksRoom.ink2} L</p>
 				<p>Total de tinta 0,5L: {state.inksRoom.ink05} L</p>
 			</DivInk>
-			<Button onClick={() => navigate(routes.home)}>Voltar</Button>
+			<Link to={routes.home}>
+				<Button>Voltar</Button>
+			</Link>
 		</Container>
 	);
 };
-
-export default ResultPage;
