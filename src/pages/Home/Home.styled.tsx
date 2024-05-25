@@ -29,3 +29,8 @@ export const Form = styled.form`
 	justify-content: center;
 	align-items: center;
 `;
+
+export const ErrorText = styled.p`
+	color: #d94142;
+	font-size: small;
+`;

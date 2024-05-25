@@ -1,14 +1,17 @@
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "../../components/input";
 
-import { DivButton, DivFormWall, Form, Grid } from "./Home.styled";
+import { DivButton, DivFormWall, ErrorText, Form, Grid } from "./Home.styled";
 import { useCalculateRoomPaintMutation } from "../../hooks/useApollo";
 import { Button } from "../../components/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "../../components/container";
+import { useNavigate } from "react-router-dom";
+import { routes } from "../../utils";
+import { toast } from "react-toastify";
 
-interface wallProps {
-	height: string;
+export interface wallProps {
+	height: number;
 	length: number;
 	quantityDoors?: number;
 	quantityWindows?: number;
@@ -22,57 +25,75 @@ export interface FormProps {
 }
 
 export const Home = () => {
-	const { handleSubmit, control } = useForm<FormProps>();
-	const [calculateRoom, { data }] = useCalculateRoomPaintMutation();
+	const {
+		handleSubmit,
+		control,
+		formState: { errors },
+	} = useForm<FormProps>();
+	const [calculateRoom, { error }] = useCalculateRoomPaintMutation();
 	const [existResult, setExistResult] = useState(false);
+	const navigate = useNavigate();
 
 	const onSubmit = async (info: FormProps) => {
-		await calculateRoom({
+		const walls = [
+			{
+				height: Number(info.firstWall.height),
+				length: Number(info.firstWall.length),
+				quantityDoors: Number(info.firstWall.quantityDoors ?? 0),
+				quantityWindows: Number(info.firstWall.quantityWindows ?? 0),
+			},
+			{
+				height: Number(info.secondWall.height),
+				length: Number(info.secondWall.length),
+				quantityDoors: Number(info.secondWall.quantityDoors ?? 0),
+				quantityWindows: Number(info.secondWall.quantityWindows ?? 0),
+			},
+			{
+				height: Number(info.thirdWall.height),
+				length: Number(info.thirdWall.length),
+				quantityDoors: Number(info.thirdWall.quantityDoors ?? 0),
+				quantityWindows: Number(info.thirdWall.quantityWindows ?? 0),
+			},
+			{
+				height: Number(info.fourthWall.height),
+				length: Number(info.fourthWall.length),
+				quantityDoors: Number(info.fourthWall.quantityDoors ?? 0),
+				quantityWindows: Number(info.fourthWall.quantityWindows ?? 0),
+			},
+		];
+
+		const { data } = await calculateRoom({
 			variables: {
 				data: {
-					walls: [
-						{
-							height: Number(info.firstWall.height),
-							length: Number(info.firstWall.length),
-							quantityDoors: Number(info.firstWall.quantityDoors ?? 0),
-							quantityWindows: Number(info.firstWall.quantityWindows ?? 0),
-						},
-						{
-							height: Number(info.secondWall.height),
-							length: Number(info.secondWall.length),
-							quantityDoors: Number(info.secondWall.quantityDoors ?? 0),
-							quantityWindows: Number(info.secondWall.quantityWindows ?? 0),
-						},
-						{
-							height: Number(info.thirdWall.height),
-							length: Number(info.thirdWall.length),
-							quantityDoors: Number(info.thirdWall.quantityDoors ?? 0),
-							quantityWindows: Number(info.thirdWall.quantityWindows ?? 0),
-						},
-						{
-							height: Number(info.fourthWall.height),
-							length: Number(info.fourthWall.length),
-							quantityDoors: Number(info.fourthWall.quantityDoors ?? 0),
-							quantityWindows: Number(info.fourthWall.quantityWindows ?? 0),
-						},
-					],
+					walls,
 				},
 			},
 		});
-		data && setExistResult(true);
+		const inksRoom = data?.CalculateRoomPaint;
+		console.log(inksRoom);
+		if (inksRoom) {
+			navigate(routes.result, { state: { inksRoom } });
+		}
 	};
+
+	useEffect(() => {
+		toast.error(error?.message, {
+			position: "top-center",
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "light",
+		});
+	}, [error]);
+
+	console.log(errors);
 
 	return (
 		<Container>
 			<h1>Calcule a quantidade de tinta</h1>
-			{existResult && (
-				<div>
-					<h1>Tinta 18L: {data?.CalculateRoomPaint.ink18}</h1>
-					<h1>Tinta 3,6L: {data?.CalculateRoomPaint.ink3}</h1>
-					<h1>Tinta 2,5L: {data?.CalculateRoomPaint.ink2}</h1>
-					<h1>Tinta 0,5L: {data?.CalculateRoomPaint.ink05}</h1>
-				</div>
-			)}
 			<Form onSubmit={handleSubmit(onSubmit)}>
 				{!existResult && (
 					<Grid>
@@ -82,7 +103,8 @@ export const Home = () => {
 								control={control}
 								name="firstWall.height"
 								rules={{
-									required: { value: true, message: "A altura é obrigatório" },
+									required: { value: true, message: "A altura é obrigatório!" },
+									min: { value: 1, message: "A altura deve ser no minimo 1!" },
 								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
@@ -93,9 +115,22 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.firstWall?.height && (
+								<ErrorText>{errors.firstWall?.height.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="firstWall.length"
+								rules={{
+									required: {
+										value: true,
+										message: "A comprimento é obrigatório!",
+									},
+									min: {
+										value: 1,
+										message: "A comprimento deve ser no minimo 1!",
+									},
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a comprimento da parede..."
@@ -105,6 +140,9 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.firstWall?.length && (
+								<ErrorText>{errors.firstWall?.length.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="firstWall.quantityDoors"
@@ -136,6 +174,10 @@ export const Home = () => {
 							<Controller
 								control={control}
 								name="secondWall.height"
+								rules={{
+									required: { value: true, message: "A altura é obrigatório!" },
+									min: { value: 1, message: "A altura deve ser no minimo 1!" },
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a altura da parede..."
@@ -145,9 +187,22 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.secondWall?.height && (
+								<ErrorText>{errors.secondWall?.height.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="secondWall.length"
+								rules={{
+									required: {
+										value: true,
+										message: "A comprimento é obrigatório!",
+									},
+									min: {
+										value: 1,
+										message: "A comprimento deve ser no minimo 1!",
+									},
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a comprimento da parede..."
@@ -157,6 +212,9 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.secondWall?.length && (
+								<ErrorText>{errors.secondWall?.length.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="secondWall.quantityDoors"
@@ -188,6 +246,10 @@ export const Home = () => {
 							<Controller
 								control={control}
 								name="thirdWall.height"
+								rules={{
+									required: { value: true, message: "A altura é obrigatório!" },
+									min: { value: 1, message: "A altura deve ser no minimo 1!" },
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a altura da parede..."
@@ -197,9 +259,22 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.thirdWall?.height && (
+								<ErrorText>{errors.thirdWall?.height.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="thirdWall.length"
+								rules={{
+									required: {
+										value: true,
+										message: "A comprimento é obrigatório!",
+									},
+									min: {
+										value: 1,
+										message: "A comprimento deve ser no minimo 1!",
+									},
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a comprimento da parede..."
@@ -209,6 +284,9 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.thirdWall?.length && (
+								<ErrorText>{errors.thirdWall?.length.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="thirdWall.quantityDoors"
@@ -240,6 +318,10 @@ export const Home = () => {
 							<Controller
 								control={control}
 								name="fourthWall.height"
+								rules={{
+									required: { value: true, message: "A altura é obrigatório!" },
+									min: { value: 1, message: "A altura deve ser no minimo 1!" },
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a altura da parede..."
@@ -249,9 +331,22 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.fourthWall?.height && (
+								<ErrorText>{errors.fourthWall?.height.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="fourthWall.length"
+								rules={{
+									required: {
+										value: true,
+										message: "A comprimento é obrigatório!",
+									},
+									min: {
+										value: 1,
+										message: "A comprimento deve ser no minimo 1!",
+									},
+								}}
 								render={({ field: { onChange, value } }) => (
 									<Input
 										placeholder="Digite a comprimento da parede..."
@@ -261,6 +356,9 @@ export const Home = () => {
 									/>
 								)}
 							/>
+							{errors.fourthWall?.length && (
+								<ErrorText>{errors.fourthWall?.length.message}</ErrorText>
+							)}
 							<Controller
 								control={control}
 								name="fourthWall.quantityDoors"
