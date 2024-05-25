@@ -35,37 +35,15 @@ export const Home = () => {
 	const navigate = useNavigate();
 
 	const onSubmit = async (info: FormProps) => {
-		const walls = [
-			{
-				height: Number(info.firstWall.height),
-				length: Number(info.firstWall.length),
-				quantityDoors: Number(info.firstWall.quantityDoors ?? 0),
-				quantityWindows: Number(info.firstWall.quantityWindows ?? 0),
-			},
-			{
-				height: Number(info.secondWall.height),
-				length: Number(info.secondWall.length),
-				quantityDoors: Number(info.secondWall.quantityDoors ?? 0),
-				quantityWindows: Number(info.secondWall.quantityWindows ?? 0),
-			},
-			{
-				height: Number(info.thirdWall.height),
-				length: Number(info.thirdWall.length),
-				quantityDoors: Number(info.thirdWall.quantityDoors ?? 0),
-				quantityWindows: Number(info.thirdWall.quantityWindows ?? 0),
-			},
-			{
-				height: Number(info.fourthWall.height),
-				length: Number(info.fourthWall.length),
-				quantityDoors: Number(info.fourthWall.quantityDoors ?? 0),
-				quantityWindows: Number(info.fourthWall.quantityWindows ?? 0),
-			},
-		];
-
 		const { data } = await calculateRoom({
 			variables: {
 				data: {
-					walls,
+					walls: Object.values(info).map(
+						(wall) =>
+							Object.fromEntries(
+								Object.entries(wall).map(([key, value]) => [key, Number(value)])
+							) as unknown as wallProps
+					),
 				},
 			},
 		});
@@ -77,7 +55,9 @@ export const Home = () => {
 	};
 
 	useEffect(() => {
-		toast.error(error?.message, {
+		if (!error?.message) return;
+
+		toast.error(error.message, {
 			position: "top-center",
 			autoClose: 5000,
 			hideProgressBar: false,
@@ -89,8 +69,6 @@ export const Home = () => {
 		});
 	}, [error]);
 
-	console.log(errors);
-
 	return (
 		<Container>
 			<h1>Calcule a quantidade de tinta</h1>
@@ -98,7 +76,7 @@ export const Home = () => {
 				{!existResult && (
 					<Grid>
 						<DivFormWall>
-							<h4>Primeria parede</h4>
+							<h4>Primeira parede</h4>
 							<Controller
 								control={control}
 								name="firstWall.height"
@@ -398,4 +376,3 @@ export const Home = () => {
 		</Container>
 	);
 };
-export default Home;
