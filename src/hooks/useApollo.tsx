@@ -27,6 +27,7 @@ export type InkModel = {
   ink2: Scalars['Float']['output'];
   ink3: Scalars['Float']['output'];
   ink18: Scalars['Float']['output'];
+  totalInk: Scalars['Float']['output'];
 };
 
 export type Mutation = {
@@ -56,12 +57,7 @@ export type CalculateRoomPaintMutationVariables = Exact<{
 }>;
 
 
-export type CalculateRoomPaintMutation = { __typename?: 'Mutation', CalculateRoomPaint: { __typename?: 'InkModel', ink05: number, ink3: number, ink2: number, ink18: number } };
-
-export type GetHelloWorldQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetHelloWorldQuery = { __typename?: 'Query', getHelloWorld: string };
+export type CalculateRoomPaintMutation = { __typename?: 'Mutation', CalculateRoomPaint: { __typename?: 'InkModel', ink05: number, ink3: number, ink2: number, ink18: number, totalInk: number } };
 
 
 export const CalculateRoomPaintDocument = gql`
@@ -71,6 +67,7 @@ export const CalculateRoomPaintDocument = gql`
     ink3
     ink2
     ink18
+    totalInk
   }
 }
     `;
@@ -100,40 +97,3 @@ export function useCalculateRoomPaintMutation(baseOptions?: Apollo.MutationHookO
 export type CalculateRoomPaintMutationHookResult = ReturnType<typeof useCalculateRoomPaintMutation>;
 export type CalculateRoomPaintMutationResult = Apollo.MutationResult<CalculateRoomPaintMutation>;
 export type CalculateRoomPaintMutationOptions = Apollo.BaseMutationOptions<CalculateRoomPaintMutation, CalculateRoomPaintMutationVariables>;
-export const GetHelloWorldDocument = gql`
-    query getHelloWorld {
-  getHelloWorld
-}
-    `;
-
-/**
- * __useGetHelloWorldQuery__
- *
- * To run a query within a React component, call `useGetHelloWorldQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetHelloWorldQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetHelloWorldQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetHelloWorldQuery(baseOptions?: Apollo.QueryHookOptions<GetHelloWorldQuery, GetHelloWorldQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetHelloWorldQuery, GetHelloWorldQueryVariables>(GetHelloWorldDocument, options);
-      }
-export function useGetHelloWorldLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHelloWorldQuery, GetHelloWorldQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetHelloWorldQuery, GetHelloWorldQueryVariables>(GetHelloWorldDocument, options);
-        }
-export function useGetHelloWorldSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetHelloWorldQuery, GetHelloWorldQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetHelloWorldQuery, GetHelloWorldQueryVariables>(GetHelloWorldDocument, options);
-        }
-export type GetHelloWorldQueryHookResult = ReturnType<typeof useGetHelloWorldQuery>;
-export type GetHelloWorldLazyQueryHookResult = ReturnType<typeof useGetHelloWorldLazyQuery>;
-export type GetHelloWorldSuspenseQueryHookResult = ReturnType<typeof useGetHelloWorldSuspenseQuery>;
-export type GetHelloWorldQueryResult = Apollo.QueryResult<GetHelloWorldQuery, GetHelloWorldQueryVariables>;

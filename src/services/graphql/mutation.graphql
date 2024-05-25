@@ -4,5 +4,6 @@ mutation CalculateRoomPaint($data: CalculateRoomPaintDto!) {
 		ink3
 		ink2
 		ink18
+		totalInk
 	}
 }
